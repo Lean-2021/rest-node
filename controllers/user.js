@@ -1,28 +1,22 @@
 const Usuario = require("../models/usuario");
 const bcryptjs = require("bcryptjs");
 
-const getUser = (req, res) => {
-  const { q, nombre = "no name", key } = req.query;
+const getUser = async (req, res) => {
+  const { limite = 5, desde = 0 } = req.query;
+
+  const [total, usuarios] = await Promise.all([
+    Usuario.countDocuments({ estado: true }),
+    Usuario.find({ estado: true }).limit(Number(limite)).skip(Number(desde)),
+  ]);
   res.status(200).json({
-    msg: "Mensaje GET api",
-    q,
-    nombre,
-    key,
+    total,
+    usuarios,
   });
 };
 
 const postUser = async (req, res) => {
-
   const { nombre, correo, password, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, password, rol });
-
-  //Verificar si existe el correo
-  const existeCorreo = await Usuario.findOne({ correo });
-  if (existeCorreo) {
-    return res.status(400).json({
-      msg: "El correo ya está registrado",
-    });
-  }
 
   //Encryptar la contraseña
   const encriptar = bcryptjs.genSaltSync(10);
@@ -34,18 +28,33 @@ const postUser = async (req, res) => {
   });
 };
 
-const putUser = (req, res) => {
+const putUser = async (req, res) => {
   const { id } = req.params;
-  res.status(200).json({
-    msg: "Mensaje PUT api",
-    id,
-  });
+  const { _id, password, google, correo, ...restInfo } = req.body;
+
+  //validar con la base de datos
+
+  if (password) {
+    //Encryptar la contraseña
+    const encriptar = bcryptjs.genSaltSync(10);
+    restInfo.password = bcryptjs.hashSync(password, encriptar);
+  }
+  const usuario = await Usuario.findByIdAndUpdate(id, restInfo);
+
+  res.status(200).json(usuario);
 };
 
-const deleteUser = (req, res) => {
-  res.status(200).json({
-    msg: "Mensaje DELETE api",
-  });
+const deleteUser = async (req, res) => {
+  //borrar usuario
+  const { id } = req.params;
+
+  //borrar fisicamente
+  // const usuario = await Usuario.findByIdAndDelete(id);
+
+  //cambiar estado a false no se borra fisicamente de la base de datos
+  const usuario = await Usuario.findByIdAndUpdate(id,{estado:false});
+
+  res.status(200).json(usuario);
 };
 
 module.exports = {
