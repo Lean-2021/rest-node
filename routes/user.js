@@ -13,6 +13,7 @@ const {
   existeUsuarioById,
 } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
 
 const router = Router();
 
@@ -49,6 +50,7 @@ router.put(
 router.delete(
   "/:id",
   [
+    validarJWT,
     check("id", "El ID ingresado no es válido").isMongoId(), //chequear ID válido de mongoID
     check("id").custom(existeUsuarioById), // chequear que el ID ingresado exista
     validarCampos,

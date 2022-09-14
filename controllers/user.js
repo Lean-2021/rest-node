@@ -47,7 +47,7 @@ const putUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   //borrar usuario
   const { id } = req.params;
-
+ 
   //borrar fisicamente
   // const usuario = await Usuario.findByIdAndDelete(id);
 
