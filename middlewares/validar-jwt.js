@@ -6,7 +6,7 @@ const validarJWT = async (req, res, next) => {
 
   if (!token) {
     return res.status(401).json({
-      msg: "No tiene permisos para eliminar este usuario",
+      msg: "No tiene permisos suficientes para realizar esta accion",
     });
   }
 
