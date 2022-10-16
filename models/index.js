@@ -5,9 +5,9 @@ const Server = require("./server");
 const Product = require("./product");
 
 module.exports = {
-  ...Category,
-  ...Product,
-  ...Role,
-  ...Usuario,
-  ...Server,
+  Category,
+  Product,
+  Role,
+  Usuario,
+  Server,
 };
