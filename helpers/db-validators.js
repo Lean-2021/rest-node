@@ -1,5 +1,5 @@
 const Role = require("../models/role");
-const {Usuario,Category,Product} = require("../models");
+const { Usuario, Category, Product } = require("../models");
 
 const esRoleValido = async (rol = "") => {
   //verificar roles permitidos
@@ -21,32 +21,44 @@ const emailExistente = async (correo = "") => {
 
 //verficar si existe un usuario por ID
 
-const existeUsuarioById=async(id)=>{
-    const existeUsuario = await Usuario.findById(id);
-    if(!existeUsuario){
-        throw new Error(`No existe un usuario con el id: ${id}`);
-    }
-}
+const existeUsuarioById = async (id) => {
+  const existeUsuario = await Usuario.findById(id);
+  if (!existeUsuario) {
+    throw new Error(`No existe un usuario con el id: ${id}`);
+  }
+};
 //verificar si existe la categoria por el ID
 
-const existeCategoria =async(id)=>{
+const existeCategoria = async (id) => {
   const categoria = await Category.findById(id);
-  if(!categoria){
+  if (!categoria) {
     throw new Error(`No existe la cateoria con el id: ${id}`);
   }
-}
+};
 // verificar si existe el usuario por Id
-const existeProducto =async(id)=>{
+const existeProducto = async (id) => {
   const producto = await Product.findById(id);
-  if(!producto){
+  if (!producto) {
     throw new Error(`No existe la cateoria con el id: ${id}`);
   }
-}
+};
+
+//validar colecciones permitidas
+
+const coleccionesPermitidas = (coleccion = "", colecciones = []) => {
+  const coleccionIncluida = colecciones.includes(coleccion);
+  if (!coleccionIncluida)
+    throw new Error(
+      `La coleccion ${coleccion} no es permitida, ${colecciones}`
+    );
+  return true;
+};
 
 module.exports = {
   esRoleValido,
   emailExistente,
   existeUsuarioById,
   existeCategoria,
-  existeProducto
+  existeProducto,
+  coleccionesPermitidas,
 };
